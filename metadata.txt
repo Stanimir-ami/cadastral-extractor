@@ -7,6 +7,5 @@ author=Stanimir Dimitrov
 email=stanimirami777@gmail.com
 icon=icons/icon.png
 about=Позволява извличане на данни от кадастрални .shp файлове по идентификатор (кадастър на България). Поддържа експорт във файлови формати CSV (точки), KML (контур + точки), DXF (контур)./Allows data extraction from cadastral .shp files by identifier (Cadastre of Bulgaria). Supports export in CSV (points), KML (contour + points), DXF (contour) file formats.
-
-# repository=https://github.com/yourname/cadastral-extractor
-# tracker=https://github.com/yourname/cadastral-extractor/issues
+repository=https://github.com/Stanimir-ami/cadastral-extractor
+tracker=https://github.com/Stanimir-ami/cadastral-extractor/issues
