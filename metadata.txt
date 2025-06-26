@@ -1,12 +1,13 @@
 [general]
 name=Cadastral Extractor
 description=Извличане на имот по идентификатор и експорт в DXF, CSV, KML
-version=1.0.0
+version=1.0.1
 qgisMinimumVersion=3.10
 author=Stanimir Dimitrov
 email=stanimirami777@gmail.com
 icon=icons/icon.png
-about=Позволява извличане на данни от кадастрални .shp файлове по идентификатор (кадастър на България). 
-Supports export in CSV (points), KML (contour + points), DXF (contour) file formats.
+about=Позволява извличане на данни от кадастрални .shp файлове по идентификатор (кадастър на България). Поддържа експорт във файлови формати CSV (точки), KML (контур + точки), DXF (контур). / Allows data extraction from cadastral .shp files by identifier (Cadastre of Bulgaria). Supports export in CSV (points), KML (contour + points), DXF (contour) file formats.
 repository=https://github.com/Stanimir-ami/cadastral-extractor
 tracker=https://github.com/Stanimir-ami/cadastral-extractor/issues
+homepage=https://github.com/Stanimir-ami/cadastral-extractor
+keywords=cadastre,bulgaria,property,export,csv,dxf,kml,shapefile,EPSG7801
