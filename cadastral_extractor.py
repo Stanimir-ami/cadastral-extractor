@@ -47,7 +47,7 @@ class CadastralExtractor:
             "ОПЦИИ ЗА ТЕГЛЕНЕ:\n"
             "-- CSV - Генерирана координатите в координатна система BGS2005/CCS2005 EPSG:7801;\n"
             "-- KML - Генерирани два KML файла - с контура на имота и точките по чупките на имота;\n"
-            "-- DXF - Гененерира DXF файл с контура на имота."
+            "-- DXF - Гененерира DXF файл с контура на имота в координатна система BGS2005/CCS2005 EPSG:7801."
         )
 
         self.dialog.combo_LayerSelect.clear()
@@ -94,6 +94,21 @@ class CadastralExtractor:
         new_feat = QgsFeature(feature)
         provider.addFeatures([new_feat])
         QgsProject.instance().addMapLayer(self.selected_layer)
+        # Взимане на атрибутите на новия обект
+        from PyQt5.QtCore import QVariant  # добави това горе ако го няма вече
+        attributes = new_feat.attributes()
+        field_names = [field.name() for field in self.selected_layer.fields()]
+        attr_text = "\n".join([
+            f"{name}: {value}" for name, value in zip(field_names, attributes) if value not in [None, '', QVariant()]
+        ])
+
+        # Показване само ако има какво да се покаже
+        if attr_text.strip():
+            QMessageBox.information(
+                self.dialog,
+                "Информация за имота",
+                attr_text
+            )
 
         self.iface.messageBar().pushMessage("Успех", "Имотът е намерен и копиран в нов слой.", level=0)
         self.dialog.progressBar.setValue(100)
