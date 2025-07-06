@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>799</width>
-    <height>438</height>
+    <width>913</width>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,8 +25,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>390</y>
+     <x>60</x>
+     <y>640</y>
      <width>781</width>
      <height>24</height>
     </rect>
@@ -41,10 +41,10 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>60</y>
-     <width>321</width>
-     <height>181</height>
+     <x>20</x>
+     <y>70</y>
+     <width>551</width>
+     <height>521</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -62,15 +62,28 @@
    <property name="checkable">
     <bool>false</bool>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>Слой</string>
       </property>
      </widget>
     </item>
-    <item>
+    <item row="8" column="0">
+     <widget class="QPushButton" name="btn_ClearList">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Изчисти списъка</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
      <widget class="QComboBox" name="combo_LayerSelect">
       <property name="autoFillBackground">
        <bool>false</bool>
@@ -89,21 +102,7 @@
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Идентификатор</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="lineEdit_CadastralID">
-      <property name="placeholderText">
-       <string>Въведете идентификатор на имот</string>
-      </property>
-     </widget>
-    </item>
-    <item>
+    <item row="4" column="0">
      <widget class="QPushButton" name="btn_FindParcel">
       <property name="toolTip">
        <string>Натиснете, за да откриете и селектирате имота по въведения идентификатор</string>
@@ -113,57 +112,37 @@
       </property>
      </widget>
     </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>240</y>
-     <width>321</width>
-     <height>120</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Експорт опции</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="QLabel" name="label_4">
+    <item row="6" column="0">
+     <widget class="QListWidget" name="list_SelectedParcels"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>Избери формат</string>
+       <string>Идентификатор</string>
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QComboBox" name="combo_ExportFormat">
-      <property name="toolTip">
-       <string>Изберете формат</string>
+    <item row="3" column="0">
+     <widget class="QLineEdit" name="lineEdit_CadastralID">
+      <property name="placeholderText">
+       <string>Въведете идентификатор на имот</string>
       </property>
-      <item>
-       <property name="text">
-        <string>DXF</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>CSV</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>KML</string>
-       </property>
-      </item>
      </widget>
     </item>
-    <item>
-     <widget class="QPushButton" name="btn_Export">
+    <item row="7" column="0">
+     <widget class="QPushButton" name="btn_RemoveSelected">
+      <property name="text">
+       <string>Премахни избрания</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" rowspan="3">
+     <widget class="QPushButton" name="btn_SelectByClick">
       <property name="toolTip">
-       <string>Експортира избраният имот в избраният формат</string>
+       <string>Изберете имот чрез клик върху картата</string>
       </property>
       <property name="text">
-       <string>Експортирай</string>
+       <string>Посочи от карта</string>
       </property>
      </widget>
     </item>
@@ -172,10 +151,10 @@
   <widget class="QLabel" name="plugin_info">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>60</y>
-     <width>421</width>
-     <height>301</height>
+     <x>590</x>
+     <y>80</y>
+     <width>301</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="maximumSize">
@@ -223,7 +202,7 @@
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>621</width>
+     <width>871</width>
      <height>41</height>
     </rect>
    </property>
