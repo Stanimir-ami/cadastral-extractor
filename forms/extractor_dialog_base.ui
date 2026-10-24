@@ -1,231 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>913</width>
-    <height>682</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>KAIS open data convertor</string>
-  </property>
-  <property name="whatsThis">
-   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;thisdsds&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-  </property>
-  <property name="autoFillBackground">
-   <bool>true</bool>
-  </property>
-  <widget class="QProgressBar" name="progressBar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>640</y>
-     <width>781</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="value">
-    <number>24</number>
-   </property>
-   <property name="textVisible">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>70</y>
-     <width>551</width>
-     <height>521</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="title">
-    <string>Търсене на имот/сграда</string>
-   </property>
-   <property name="flat">
-    <bool>false</bool>
-   </property>
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Слой</string>
-      </property>
+ <class>CadastralExtractorDialog</class>
+ <widget class="QDialog" name="CadastralExtractorDialog">
+  <property name="windowTitle"><string>Cadastral Extractor — кадастрален експорт</string></property>
+  <property name="minimumSize"><size><width>400</width><height>420</height></size></property>
+  <layout class="QVBoxLayout" name="outerLayout">
+   <property name="spacing"><number>0</number></property>
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QScrollArea" name="contentScrollArea">
+     <property name="widgetResizable"><bool>true</bool></property>
+     <property name="horizontalScrollBarPolicy"><enum>Qt::ScrollBarAsNeeded</enum></property>
+     <property name="verticalScrollBarPolicy"><enum>Qt::ScrollBarAsNeeded</enum></property>
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <widget class="QWidget" name="scrollContent">
+      <property name="geometry"><rect><x>0</x><y>0</y><width>700</width><height>700</height></rect></property>
+      <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing"><number>10</number></property>
+   <property name="leftMargin"><number>14</number></property>
+   <property name="topMargin"><number>14</number></property>
+   <property name="rightMargin"><number>14</number></property>
+   <property name="bottomMargin"><number>14</number></property>
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="text"><string>Cadastral Extractor</string></property>
+     <property name="styleSheet"><string notr="true">font-size: 18pt; font-weight: 600; padding: 4px 0;</string></property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="subtitleLabel">
+     <property name="text"><string>Търсене на кадастрални имоти и експорт на координати и геометрия</string></property>
+     <property name="wordWrap"><bool>true</bool></property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lbl_OpenDataHint">
+     <property name="text"><string>Първа стъпка: изтеглете кадастралните отворени данни, ако все още не разполагате с тях.</string></property>
+     <property name="wordWrap"><bool>true</bool></property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btn_OpenCadastreData">
+     <property name="text"><string>Отворени данни на АГКК</string></property>
+     <property name="toolTip"><string>Отваря страницата с отворените данни на кадастъра</string></property>
+     <property name="minimumSize"><size><width>0</width><height>38</height></size></property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupSearch">
+     <property name="title"><string>1. Избор и търсене</string></property>
+     <layout class="QGridLayout" name="searchLayout">
+      <item row="0" column="0"><widget class="QLabel" name="layerLabel"><property name="text"><string>Входен полигонов слой</string></property></widget></item>
+      <item row="0" column="1" colspan="2"><widget class="QComboBox" name="combo_LayerSelect"><property name="placeholderText"><string>Изберете слой от проекта</string></property><property name="sizeAdjustPolicy"><enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum></property><property name="minimumContentsLength"><number>20</number></property></widget></item>
+      <item row="1" column="0"><widget class="QLabel" name="idLabel"><property name="text"><string>Идентификатор (cadnum)</string></property></widget></item>
+      <item row="1" column="1"><widget class="QLineEdit" name="lineEdit_CadastralID"><property name="placeholderText"><string>Въведете кадастрален идентификатор</string></property></widget></item>
+      <item row="1" column="2"><widget class="QPushButton" name="btn_FindParcel"><property name="text"><string>Намери и добави</string></property><property name="toolTip"><string>Търси по полето cadnum и добавя имота в списъка</string></property></widget></item>
+      <item row="2" column="2"><widget class="QPushButton" name="btn_SelectByClick">
+     <property name="toolTip"><string>Минимизира този прозорец. Кликнете върху имот в картата; Escape или десен бутон отменя избора.</string></property><property name="minimumSize"><size><width>30</width><height>30</height></size></property><property name="maximumSize"><size><width>34</width><height>34</height></size></property><property name="text"><string>⌖</string></property><property name="toolTip"><string>Посочи имот от картата</string></property><property name="accessibleName"><string>Посочване от картата</string></property><property name="styleSheet"><string notr="true">font-size: 13pt; font-weight: 600; border: 1px solid palette(mid); border-radius: 5px; padding: 2px;</string></property></widget></item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupSelected">
+     <property name="title"><string>2. Списък за експортиране</string></property>
+     <layout class="QVBoxLayout" name="selectedLayout">
+      <item><widget class="QLabel" name="listHint"><property name="text"><string>За всеки имот можете да изберете отделен формат и да го експортирате самостоятелно.</string></property><property name="wordWrap"><bool>true</bool></property></widget></item>
+      <item><widget class="QListWidget" name="list_SelectedParcels"><property name="minimumHeight"><number>120</number></property><property name="alternatingRowColors"><bool>true</bool></property></widget></item>
+      <item>
+       <layout class="QHBoxLayout" name="listButtonsLayout">
+        <item><widget class="QLabel" name="lbl_Count"><property name="text"><string>Добавени имоти: 0</string></property></widget></item>
+        <item><spacer name="listButtonsSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>30</width><height>20</height></size></property></spacer></item>
+        <item><widget class="QPushButton" name="btn_RemoveSelected"><property name="text"><string>Премахни избрания</string></property></widget></item>
+        <item><widget class="QPushButton" name="btn_ClearList"><property name="text"><string>Изчисти списъка</string></property></widget></item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupExport">
+     <property name="title"><string>3. Масов експорт</string></property>
+     <layout class="QGridLayout" name="exportLayout">
+      <item row="0" column="0" colspan="3"><widget class="QPushButton" name="btn_ExportAll"><property name="text"><string>Експортирай всички</string></property><property name="toolTip"><string>Експортира всички избрани имоти според формата, избран за всеки имот в списъка</string></property></widget></item>
+      <item row="1" column="0"><widget class="QLabel" name="folderLabel"><property name="text"><string>Папка за запис</string></property></widget></item>
+      <item row="1" column="1"><widget class="QLineEdit" name="outputFolder"><property name="placeholderText"><string>Изберете папка за запис</string></property></widget></item>
+      <item row="1" column="2"><widget class="QPushButton" name="btn_BrowseFolder"><property name="text"><string>Запиши всички в...</string></property></widget></item>
+     </layout>
+    </widget>
+   </item>
+   <item><widget class="QProgressBar" name="progressBar"><property name="value"><number>0</number></property><property name="textVisible"><bool>true</bool></property></widget></item>
+   <item><widget class="QLabel" name="plugin_info"><property name="text"><string>CSV: точки в EPSG:7801. KML: контур и точки в отделни файлове. DXF: контур в EPSG:7801.</string></property><property name="wordWrap"><bool>true</bool></property><property name="styleSheet"><string notr="true">color: palette(mid);</string></property></widget></item>
+      </layout>
      </widget>
-    </item>
-    <item row="8" column="0">
-     <widget class="QPushButton" name="btn_ClearList">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Изчисти списъка</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QComboBox" name="combo_LayerSelect">
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="currentText">
-       <string/>
-      </property>
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
-      <property name="minimumContentsLength">
-       <number>0</number>
-      </property>
-      <property name="placeholderText">
-       <string>Посочи слой за търсене на имот/сграда</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QPushButton" name="btn_FindParcel">
-      <property name="toolTip">
-       <string>Натиснете, за да откриете и селектирате имота по въведения идентификатор</string>
-      </property>
-      <property name="text">
-       <string>Намери имот</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QListWidget" name="list_SelectedParcels"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Идентификатор</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLineEdit" name="lineEdit_CadastralID">
-      <property name="placeholderText">
-       <string>Въведете идентификатор на имот</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QPushButton" name="btn_RemoveSelected">
-      <property name="text">
-       <string>Премахни избрания</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1" rowspan="3">
-     <widget class="QPushButton" name="btn_SelectByClick">
-      <property name="toolTip">
-       <string>Изберете имот чрез клик върху картата</string>
-      </property>
-      <property name="text">
-       <string>Посочи от карта</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QLabel" name="plugin_info">
-   <property name="geometry">
-    <rect>
-     <x>590</x>
-     <y>80</y>
-     <width>301</width>
-     <height>511</height>
-    </rect>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>150000</width>
-     <height>150000</height>
-    </size>
-   </property>
-   <property name="font">
-    <font>
-     <family>MS Shell Dlg 2</family>
-     <pointsize>8</pointsize>
-     <weight>9</weight>
-     <italic>false</italic>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">font: 75 8pt &quot;MS Shell Dlg 2&quot;</string>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <property name="lineWidth">
-    <number>2</number>
-   </property>
-   <property name="midLineWidth">
-    <number>0</number>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-   <property name="wordWrap">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>871</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::LeftToRight</enum>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Sunken</enum>
-   </property>
-   <property name="text">
-    <string>Извличане на геометрия от КАИС отворени данни </string>
-   </property>
-  </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
