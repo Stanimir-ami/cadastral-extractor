@@ -1,12 +1,15 @@
 import os
 import csv
+import logging
+
+logger = logging.getLogger(__name__)
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QVariant, QVariant, QUrl, QSize, QTimer
 from qgis.PyQt.QtWidgets import (
     QAction, QMessageBox, QFileDialog, QWidget, QComboBox, QPushButton,
     QHBoxLayout, QListWidgetItem, QLabel, QVBoxLayout, QProgressBar,
-    QAbstractItemView, QToolButton, QGridLayout, QApplication, QDialog,
+    QAbstractItemView, QToolButton, QGridLayout, QApplication, QDialog, QFrame,
     QScrollArea, QPlainTextEdit
 )
 from qgis.PyQt.QtGui import QIcon, QDesktopServices, QFont, QColor
@@ -34,11 +37,11 @@ class CadastralPickMapTool(QgsMapTool):
         self.layer = layer
         self.callback = callback
         self.cancel_callback = cancel_callback
-        self.setCursor(Qt.CrossCursor)
+        self.setCursor(Qt.CursorShape.CrossCursor)
 
     def keyPressEvent(self, event):
         # Escape is a predictable way to leave map-picking mode.
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             if self.cancel_callback:
                 self.cancel_callback()
             event.accept()
@@ -49,15 +52,15 @@ class CadastralPickMapTool(QgsMapTool):
         try:
             self.canvas.messageBar().pushInfo("Cadastral Extractor", message)
         except Exception:
-            pass
+            logger.exception("Failed to display a message on the QGIS message bar.")
 
     def canvasReleaseEvent(self, event):
         # Right-click cancels; left-click selects a parcel.
-        if event.button() == Qt.RightButton:
+        if event.button() == Qt.MouseButton.RightButton:
             if self.cancel_callback:
                 self.cancel_callback()
             return
-        if event.button() != Qt.LeftButton:
+        if event.button() != Qt.MouseButton.LeftButton:
             return
 
         try:
@@ -121,7 +124,7 @@ class CadastralPickMapTool(QgsMapTool):
                     "Грешка при посочване от картата: {}".format(exc)
                 )
             except Exception:
-                pass
+                logger.exception("Failed to display the map-picking warning.")
 
 
 class CadastralExtractor:
@@ -155,7 +158,8 @@ class CadastralExtractor:
                 self.map_tool.deleteLater()
                 self.map_tool = None
             except Exception:
-                pass
+                logger.exception("Failed to clean up the map tool during plugin unload.")
+                self.map_tool = None
         if self.dialog:
             self.dialog.close()
             self.dialog = None
@@ -168,7 +172,7 @@ class CadastralExtractor:
             ui_path = os.path.join(self.plugin_dir, "forms", "extractor_dialog_base.ui")
             self.dialog = uic.loadUi(ui_path)
             self.dialog.finished.connect(self.reset_session)
-            self.dialog.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
+            self.dialog.setWindowFlag(Qt.WindowType.WindowMinimizeButtonHint, True)
             self.dialog.btn_FindParcel.clicked.connect(self.find_parcel)
             self.dialog.btn_ClearList.clicked.connect(self.clear_parcel_list)
             self.dialog.btn_SelectByClick.clicked.connect(self.enable_map_click_selection)
@@ -196,10 +200,14 @@ class CadastralExtractor:
             self.dialog.btn_ExportAll.setEnabled(False)
             self.dialog.progressBar.setVisible(False)
             self.dialog.list_SelectedParcels.setSelectionMode(
-                QAbstractItemView.SingleSelection
+    QAbstractItemView.SelectionMode.SingleSelection
             )
-            self.dialog.list_SelectedParcels.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-            self.dialog.list_SelectedParcels.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.dialog.list_SelectedParcels.setVerticalScrollBarPolicy(
+    Qt.ScrollBarPolicy.ScrollBarAsNeeded
+            )
+            self.dialog.list_SelectedParcels.setHorizontalScrollBarPolicy(
+    Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+            )
             self.dialog.list_SelectedParcels.setMaximumHeight(220)
             self.dialog.list_SelectedParcels.setSpacing(2)
             self.dialog.lineEdit_CadastralID.returnPressed.connect(self.find_parcel)
@@ -228,13 +236,13 @@ class CadastralExtractor:
                 self.iface.mapCanvas().unsetMapTool(self.map_tool)
                 self.map_tool.deleteLater()
             except Exception:
-                pass
+                logger.exception("Failed to clean up the map tool during session reset.")
             self.map_tool = None
         if self.info_dialog is not None:
             try:
                 self.info_dialog.close()
             except Exception:
-                pass
+                logger.exception("Failed to close the information dialog during session reset.")
             self.info_dialog = None
         if self.dialog is not None:
             try:
@@ -249,7 +257,7 @@ class CadastralExtractor:
                     os.path.join(os.path.expanduser("~"), "Documents")
                 )
             except Exception:
-                pass
+                logger.exception("Failed to reset the plugin dialog fields.")
 
     def refresh_layer_list(self):
         combo = self.dialog.combo_LayerSelect
@@ -257,7 +265,7 @@ class CadastralExtractor:
         combo.clear()
         for layer in QgsProject.instance().mapLayers().values():
             if isinstance(layer, QgsVectorLayer) and layer.isValid() and \
-                    layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+                    layer.geometryType() == QgsWkbTypes.GeometryType.Polygon:
                 combo.addItem(layer.name(), layer.id())
         if previous_id:
             index = combo.findData(previous_id)
@@ -282,7 +290,7 @@ class CadastralExtractor:
             QMessageBox.warning(self.dialog, "Липсва идентификатор", "Моля, въведете кадастрален идентификатор.")
             return
         layer = self._current_layer()
-        if not layer or not layer.isValid() or layer.geometryType() != QgsWkbTypes.PolygonGeometry:
+        if not layer or not layer.isValid() or layer.geometryType() != QgsWkbTypes.GeometryType.Polygon:
             QMessageBox.warning(self.dialog, "Невалиден слой", "Моля, изберете валиден полигонов слой.")
             return
         try:
@@ -360,20 +368,20 @@ class CadastralExtractor:
                 parent = self.dialog if self.dialog is not None else self.iface.mainWindow()
                 popup = QDialog(parent)
                 popup.setWindowTitle("Информация за имота")
-                popup.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
+                popup.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, False)
                 popup.setMinimumSize(420, 220)
                 popup.resize(560, 360)
                 outer = QVBoxLayout(popup)
                 scroll = QScrollArea(popup)
                 scroll.setWidgetResizable(True)
-                scroll.setFrameShape(QScrollArea.NoFrame)
+                scroll.setFrameShape(QFrame.Shape.NoFrame)
                 content = QWidget()
                 content_layout = QVBoxLayout(content)
                 content_layout.setContentsMargins(8, 8, 8, 8)
                 text_label = QLabel(message, content)
                 text_label.setWordWrap(True)
-                text_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-                text_label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+                text_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+                text_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
                 content_layout.addWidget(text_label)
                 scroll.setWidget(content)
                 outer.addWidget(scroll)
@@ -537,7 +545,7 @@ class CadastralExtractor:
             layout.initializeDefaults()
             layout.setName("План на имота - {}".format(entry["cad_id"]))
             page = layout.pageCollection().pages()[0]
-            page.setPageSize("A4", QgsLayoutItemPage.Portrait)
+            page.setPageSize("A4", QgsLayoutItemPage.Orientation.Portrait)
 
             # Temporary overlay layers: highlighted parcel outline and numbered contour points.
             crs_id = "EPSG:7801"
@@ -608,15 +616,15 @@ class CadastralExtractor:
             # Header
             title = QgsLayoutItemLabel(layout)
             title.setText("Данни за имот")
-            title.setFont(QFont("Arial", 15, QFont.Bold))
-            title.setHAlign(Qt.AlignHCenter)
+            title.setFont(QFont("Arial", 15, QFont.Weight.Bold))
+            title.setHAlign(Qt.AlignmentFlag.AlignHCenter)
             title.attemptMove(QgsLayoutPoint(10, 7))
             title.attemptResize(QgsLayoutSize(190, 10))
             layout.addLayoutItem(title)
 
             cad_label = QgsLayoutItemLabel(layout)
             cad_label.setText("Поземлен имот: {}".format(entry["cad_id"]))
-            cad_label.setFont(QFont("Arial", 10, QFont.Bold))
+            cad_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
             cad_label.attemptMove(QgsLayoutPoint(10, 18))
             cad_label.attemptResize(QgsLayoutSize(190, 7))
             layout.addLayoutItem(cad_label)
@@ -648,8 +656,8 @@ class CadastralExtractor:
 
             scale_text = QgsLayoutItemLabel(layout)
             scale_text.setText("Мащаб 1:{}".format(fitted_scale))
-            scale_text.setFont(QFont("Arial", 8, QFont.Bold))
-            scale_text.setHAlign(Qt.AlignHCenter)
+            scale_text.setFont(QFont("Arial", 8, QFont.Weight.Bold))
+            scale_text.setHAlign(Qt.AlignmentFlag.AlignHCenter)
             scale_text.attemptMove(QgsLayoutPoint(10, 134))
             scale_text.attemptResize(QgsLayoutSize(190, 6))
             layout.addLayoutItem(scale_text)
@@ -657,8 +665,8 @@ class CadastralExtractor:
             # North indicator
             north = QgsLayoutItemLabel(layout)
             north.setText("N ↑")
-            north.setFont(QFont("Arial", 12, QFont.Bold))
-            north.setHAlign(Qt.AlignHCenter)
+            north.setFont(QFont("Arial", 12, QFont.Weight.Bold))
+            north.setHAlign(Qt.AlignmentFlag.AlignHCenter)
             north.attemptMove(QgsLayoutPoint(185, 31))
             north.attemptResize(QgsLayoutSize(12, 10))
             layout.addLayoutItem(north)
@@ -681,7 +689,7 @@ class CadastralExtractor:
             info = QgsLayoutItemLabel(layout)
             info.setText("\n".join(info_lines))
             info.setFont(QFont("Arial", 8))
-            info.setMode(QgsLayoutItemLabel.ModeFont)
+            info.setMode(QgsLayoutItemLabel.Mode.ModeFont)
             info.setMargin(1)
             info.attemptMove(QgsLayoutPoint(10, 142))
             info.attemptResize(QgsLayoutSize(190, 42))
@@ -737,7 +745,7 @@ class CadastralExtractor:
             scale_bar = QgsLayoutItemScaleBar(layout)
             scale_bar.setStyle("Single Box")
             scale_bar.setLinkedMap(map_item)
-            scale_bar.setUnits(QgsUnitTypes.DistanceMeters)
+            scale_bar.setUnits(QgsUnitTypes.DistanceUnit.DistanceMeters)
             scale_bar.setUnitsPerSegment(10)
             scale_bar.setNumberOfSegments(2)
             scale_bar.setNumberOfSegmentsLeft(0)
@@ -750,8 +758,8 @@ class CadastralExtractor:
             footer.setText("Разработка: Станимир Димитров - Минно-геоложки университет, катедра Маркшайдерство и геодезия, email: stanimirami777@gmail.com")
             footer.setFont(QFont("Arial", 6))
             footer.setFontColor(QColor(90, 90, 90))
-            footer.setHAlign(Qt.AlignHCenter)
-            footer.setVAlign(Qt.AlignVCenter)
+            footer.setHAlign(Qt.AlignmentFlag.AlignHCenter)
+            footer.setVAlign(Qt.AlignmentFlag.AlignVCenter)
             footer.attemptMove(QgsLayoutPoint(5, 285))
             footer.attemptResize(QgsLayoutSize(200, 8))
             layout.addLayoutItem(footer)
@@ -760,7 +768,7 @@ class CadastralExtractor:
             settings = QgsLayoutExporter.PdfExportSettings()
             settings.dpi = 200
             result = exporter.exportToPdf(path, settings)
-            if result != QgsLayoutExporter.Success:
+            if result != QgsLayoutExporter.ExportResult.Success:
                 raise RuntimeError("QGIS не успя да запише PDF файла (код {}).".format(result))
             QMessageBox.information(self.dialog, "Готово", "Кадастралният план е записан:\n{}".format(path))
         except Exception as exc:
@@ -775,7 +783,7 @@ class CadastralExtractor:
 
     def enable_map_click_selection(self):
         layer = self._current_layer()
-        if not layer or not layer.isValid() or layer.geometryType() != QgsWkbTypes.PolygonGeometry:
+        if not layer or not layer.isValid() or layer.geometryType() != QgsWkbTypes.GeometryType.Polygon:
             QMessageBox.warning(self.dialog, "Невалиден слой", "Моля, изберете валиден полигонов слой.")
             return
         if "cadnum" not in layer.fields().names():
@@ -805,7 +813,9 @@ class CadastralExtractor:
                 self.iface.mapCanvas().unsetMapTool(tool)
                 tool.deleteLater()
             except Exception:
-                pass
+                logger.exception(
+                    "Failed to clean up the map tool after cancelling map selection."
+                )
         if self.dialog:
             self.dialog.showNormal()
             self.dialog.resize(self.dialog_default_size)
@@ -1013,5 +1023,5 @@ class CadastralExtractor:
             layer, path, QgsProject.instance().transformContext(), options
         )
         # QGIS returns (error code, error message, new filename, new layer name).
-        if result and result[0] != QgsVectorFileWriter.NoError:
+        if result and result[0] != QgsVectorFileWriter.WriterError.NoError:
             raise RuntimeError(result[1] or "Грешка при запис на файл.")

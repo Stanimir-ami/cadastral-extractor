@@ -1,7 +1,7 @@
 [general]
 name=Cadastral Extractor
-description=Извличане на кадастрални имоти по cadnum и масов експорт в DXF, CSV и KML
-version=1.2.28
+description=Cadastral property extraction by identifier (cadnum) with individual and bulk export to DXF, CSV and KML
+version=1.2.29
 qgisMinimumVersion=3.10
 qgisMaximumVersion=3.99
 author=Stanimir Dimitrov
