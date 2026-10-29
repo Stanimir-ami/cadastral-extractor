@@ -1,0 +1,43 @@
+﻿name: QGIS 4 Compatibility Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - qgis4-compatibility
+    paths:
+      - "**.py"
+      - ".github/workflows/qgis4-compatibility.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.py"
+      - ".github/workflows/qgis4-compatibility.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  pyqgis4-check:
+    name: PyQGIS 4 Checker (dry run)
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/qgis/pyqgis4-checker:main-ubuntu
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run compatibility analysis without modifying files
+        run: |
+          pyqt5_to_pyqt6.py --dry_run --logfile pyqt6_checker.log .
+
+      - name: Upload checker report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qgis4-compatibility-report
+          path: pyqt6_checker.log
+          if-no-files-found: warn
+          retention-days: 7
