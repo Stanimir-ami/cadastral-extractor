@@ -413,7 +413,7 @@ class CadastralExtractor:
         if any(item["cad_id"] == cad_id and item["feature"].id() == feature.id()
                and item["crs"].authid() == crs.authid() for item in self.selected_features):
             self.iface.messageBar().pushMessage(
-                "Cadastral Extractor", "Този имот вече е добавен в списъка.", level=1, duration=3
+                "Cadastral Extractor", "Този имот вече е добавен в списъка.", level=Qgis.Warning, duration=3
             )
             return
         initial_format = "CSV"
@@ -449,7 +449,7 @@ class CadastralExtractor:
         self.dialog.list_SelectedParcels.setItemWidget(list_item, item_widget)
         self.update_list_state()
         self.iface.messageBar().pushMessage(
-            "Добавено", "Имотът е добавен в списъка.", level=0, duration=3
+            "Добавено", "Имотът е добавен в списъка.", level=Qgis.Info, duration=3
         )
 
     def _set_entry_format(self, index, fmt):
@@ -467,7 +467,7 @@ class CadastralExtractor:
         self.selected_features = []
         self.dialog.list_SelectedParcels.clear()
         self.update_list_state()
-        self.iface.messageBar().pushMessage("Изчистено", "Списъкът с имоти е изчистен.", level=0, duration=3)
+        self.iface.messageBar().pushMessage("Изчистено", "Списъкът с имоти е изчистен.", level=Qgis.Info, duration=3)
 
     def remove_selected_item(self):
         row = self.dialog.list_SelectedParcels.currentRow()
@@ -801,7 +801,7 @@ class CadastralExtractor:
         self.dialog_was_maximized = self.dialog.isMaximized()
         self.dialog.showMinimized()
         self.iface.messageBar().pushMessage(
-            "Избор от карта", "Кликнете върху имот от избрания слой.", level=0, duration=5
+            "Избор от карта", "Кликнете върху имот от избрания слой.", level=Qgis.Info, duration=5
         )
 
     def cancel_map_click_selection(self):
@@ -822,7 +822,7 @@ class CadastralExtractor:
             self.dialog.raise_()
             self.dialog.activateWindow()
         self.iface.messageBar().pushMessage(
-            "Избор от карта", "Изборът е отменен.", level=0, duration=3
+            "Избор от карта", "Изборът е отменен.", level=Qgis.Info, duration=3
         )
 
     def on_feature_clicked(self, feature, layer):
@@ -894,7 +894,7 @@ class CadastralExtractor:
             QMessageBox.critical(self.dialog, "Грешка при експорт", str(exc))
             return
         self.iface.messageBar().pushMessage(
-            "Експорт", "Експортът на {} е завършен.".format(entry["cad_id"]), level=0, duration=4
+            "Експорт", "Експортът на {} е завършен.".format(entry["cad_id"]), level=Qgis.Info, duration=4
         )
 
     def export_all(self):
